@@ -1,5 +1,9 @@
 @import '../variables';
 
+button {
+  margin-right: 5px;
+}
+
 .sort {
   position: relative;
   &__label {
