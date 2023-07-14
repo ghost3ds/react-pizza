@@ -11,19 +11,16 @@ import { SearchContext } from '../App';
 import { setCategoryId } from '../redux/slices/filterSlice';
 
 const Home = () => {
-  const categoryId = useSelector((state) => state.filter.categoryId);
   const dispatch = useDispatch();
+  // const sortType = useSelector((state) => state.filter.sort.sortProperty);
+  // const categoryId = useSelector((state) => state.filter.categoryId);
+  // const orderType = useSelector((state) => state.filter.orderType);
+  const { sort, categoryId, orderType } = useSelector((state) => state.filter);
 
   const { searchValue } = React.useContext(SearchContext);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  // const [categoryId, setCategoryId] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState({
-    name: 'популярности',
-    sortProperty: 'rating',
-  });
-  const [orderType, setOrderType] = useState('asc');
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -37,7 +34,7 @@ const Home = () => {
     fetch(
       `https://636f5291f2ed5cb047daa480.mockapi.io/items?page=${currentPage}&limit=4&${
         categoryId > 0 ? `category=${categoryId}` : ''
-      }&sortBy=${sortType.sortProperty}&order=${orderType}${search}`,
+      }&sortBy=${sort.sortProperty}&order=${orderType}${search}`,
     )
       .then((res) => res.json())
       .then((arr) => {
@@ -45,14 +42,14 @@ const Home = () => {
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, orderType, searchValue, currentPage]);
+  }, [categoryId, sort.sortProperty, orderType, searchValue, currentPage]);
 
   return (
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onClickCategory} />
 
-        <Sort setOrderType={setOrderType} value={sortType} onClickSort={(i) => setSortType(i)} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
