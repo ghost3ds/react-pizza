@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import styles from './Search.module.scss';
 import { SearchContext } from '../../App';
