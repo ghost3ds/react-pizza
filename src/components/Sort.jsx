@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSort, setOrderType } from '../redux/slices/filterSlice';
 
@@ -11,6 +11,7 @@ export const list = [
 function Sort() {
   const dispatch = useDispatch();
   const sort = useSelector((state) => state.filter.sort);
+  const sortRef = useRef();
   const [open, setOpen] = useState(false);
 
   const onClickListItem = (obj) => {
@@ -18,8 +19,22 @@ function Sort() {
     setOpen(false);
   };
 
+  // Если не было клика на Sort, то скрываем окно
+  useEffect(() => {
+    const handleClickOutSide = (event) => {
+      if (!event.composedPath().includes(sortRef.current)) {
+        setOpen(false);
+      }
+    };
+    document.body.addEventListener('click', handleClickOutSide);
+
+    return () => {
+      document.body.removeEventListener('click', handleClickOutSide);
+    };
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <button onClick={() => dispatch(setOrderType('asc'))}> ↑ </button>
         <button onClick={() => dispatch(setOrderType('desc'))}> ↓ </button>
