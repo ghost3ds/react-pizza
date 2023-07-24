@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from 'react';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -16,13 +15,14 @@ import {
   setFilters,
   initialState,
 } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const items = useSelector((state) => state.pizza.items);
   const { sort, categoryId, orderType, currentPage } = useSelector((state) => state.filter);
   const { searchValue } = React.useContext(SearchContext);
-  const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const isMounted = useRef('false');
   const isSearch = useRef('false');
@@ -31,21 +31,19 @@ const Home = () => {
     dispatch(setCategoryId(id));
   }, []);
 
-  const fetchPizzas = () => {
+  const getPizzas = async () => {
     setIsLoading(true);
-
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios
-      .get(
-        `https://636f5291f2ed5cb047daa480.mockapi.io/items?page=${currentPage}&limit=4&${
-          categoryId > 0 ? `category=${categoryId}` : ''
-        }&sortBy=${sort.sortProperty}&order=${orderType}${search}`,
-      )
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    try {
+      dispatch(fetchPizzas({ currentPage, categoryId, orderType, search, sort }));
+    } catch (error) {
+      console.log('ERROR', error);
+      alert('ошибка при получении пицц');
+    } finally {
+      setIsLoading(false);
+    }
+
     window.scrollTo(0, 0);
   };
 
@@ -72,7 +70,7 @@ const Home = () => {
         initialState.selectedSort === params.selectedSort &&
         initialState.currentPage === Number(params.currentPage)
       ) {
-        fetchPizzas();
+        getPizzas();
       }
       const sort = list.find((obj) => obj.sortProperty === params.sortProperty);
       dispatch(
@@ -88,7 +86,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
 
     isSearch.current = false;
