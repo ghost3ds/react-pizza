@@ -14,14 +14,16 @@ import {
   setCurrentPage,
   setFilters,
   initialState,
+  selectFilter,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzaSlice';
+import { selectPizzaData } from '../redux/slices/cartSlice';
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { items, status } = useSelector((state) => state.pizza);
-  const { sort, categoryId, orderType, currentPage } = useSelector((state) => state.filter);
+  const { items, status } = useSelector(selectPizzaData);
+  const { sort, categoryId, orderType, currentPage } = useSelector(selectFilter);
   const { searchValue } = React.useContext(SearchContext);
   const isMounted = useRef('false');
   const isSearch = useRef('false');
