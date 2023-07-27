@@ -23,8 +23,7 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, status } = useSelector(selectPizzaData);
-  const { sort, categoryId, orderType, currentPage } = useSelector(selectFilter);
-  const { searchValue } = React.useContext(SearchContext);
+  const { sort, categoryId, orderType, currentPage, searchValue } = useSelector(selectFilter);
   const isMounted = useRef('false');
   const isSearch = useRef('false');
 
