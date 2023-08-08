@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { useEffect, useState } from 'react';
+import { FC, useCallback, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import qs from 'qs';
@@ -18,21 +18,22 @@ import {
 import { fetchPizzas } from '../redux/slices/pizzaSlice';
 import { selectPizzaData } from '../redux/slices/cartSlice';
 
-const Home = () => {
+const Home: FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, status } = useSelector(selectPizzaData);
   const { sort, categoryId, orderType, currentPage, searchValue } = useSelector(selectFilter);
-  const isMounted = useRef('false');
-  const isSearch = useRef('false');
+  const isMounted = useRef(false);
+  const isSearch = useRef(false);
 
-  const onClickCategory = useCallback((id) => {
+  const onClickCategory = useCallback((id: number) => {
     dispatch(setCategoryId(id));
   }, []);
 
   const getPizzas = async () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
+    // @ts-ignore
     dispatch(fetchPizzas({ currentPage, categoryId, orderType, search, sort }));
 
     window.scrollTo(0, 0);
@@ -58,7 +59,7 @@ const Home = () => {
       const params = qs.parse(window.location.search.substring(1));
       if (
         initialState.categoryId === Number(params.categoryId) &&
-        initialState.selectedSort === params.selectedSort &&
+        // initialState.selectedSort === params.selectedSort &&
         initialState.currentPage === Number(params.currentPage)
       ) {
         getPizzas();
@@ -99,13 +100,13 @@ const Home = () => {
         <div className="content__items">
           {status == 'loading'
             ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-            : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+            : items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />)}
         </div>
       )}
 
       <Pagination
         currentPage={currentPage}
-        onChangePage={(number) => dispatch(setCurrentPage(number))}
+        onChangePage={(number: number) => dispatch(setCurrentPage(number))}
       />
     </div>
   );
