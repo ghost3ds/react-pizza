@@ -59,7 +59,8 @@ const Home: FC = () => {
       const params = qs.parse(window.location.search.substring(1));
       if (
         initialState.categoryId === Number(params.categoryId) &&
-        // initialState.selectedSort === params.selectedSort &&
+        //@ts-ignore
+        initialState.selectedSort === params.selectedSort &&
         initialState.currentPage === Number(params.currentPage)
       ) {
         getPizzas();
