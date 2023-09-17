@@ -1,6 +1,6 @@
 import { FC, useCallback, useRef } from 'react';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import qs from 'qs';
 import Categories from '../components/Categories';
@@ -17,10 +17,11 @@ import {
 } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzaSlice';
 import { selectPizzaData } from '../redux/slices/cartSlice';
+import { useAppDispatch } from '../redux/store';
 
 const Home: FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { items, status } = useSelector(selectPizzaData);
   const { sort, categoryId, orderType, currentPage, searchValue } = useSelector(selectFilter);
   const isMounted = useRef(false);
@@ -33,8 +34,9 @@ const Home: FC = () => {
   const getPizzas = async () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    // @ts-ignore
-    dispatch(fetchPizzas({ currentPage, categoryId, orderType, search, sort }));
+    dispatch(
+      fetchPizzas({ currentPage: String(currentPage), categoryId, orderType, search, sort }),
+    );
 
     window.scrollTo(0, 0);
   };
@@ -69,6 +71,7 @@ const Home: FC = () => {
       dispatch(
         setFilters({
           ...params,
+          //@ts-ignore
           sort,
         }),
       );

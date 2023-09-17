@@ -20,6 +20,7 @@ function Sort() {
   const [open, setOpen] = useState(false);
 
   const onClickListItem = (obj: SortItem) => {
+    // @ts-ignore
     dispatch(setSort(obj));
     setOpen(false);
   };
